@@ -63,7 +63,13 @@ module.exports = {
 			options: {}
 		}
 	},
-
+	
+	events:{
+		"db.connected"(){
+			this.logger.info('Database connection established.');
+		}
+	},
+	
 	methods: {
 		// initRoutes(app) {
 		// 	// app.get('/webhook', this.registerUrl);
@@ -73,13 +79,15 @@ module.exports = {
 		// 	// app.get('/webhook', this.getList);
 	},
 
+
 	created() {
 		const app = express();
 		app.use(bodyParser());
 		this.app = app;
 		const DB_URI = process.env.MONGODB_URI;
 		mongoose.connect(DB_URI)
-			.then(result => console.log('Connection Established!'))
+			.then(result => this.broker.emit("db.connected"))
 			.catch(err => console.log(err));
 	}
+
 }
