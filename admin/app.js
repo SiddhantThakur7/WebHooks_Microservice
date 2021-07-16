@@ -11,13 +11,16 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const loginController = require('./controllers/access.controllers');
+const accessRoutes = require('./routes/access.routes');
+const getLoginPage = require('./controllers/access.controllers').getLoginPage;
+const adminRoutes = require('./routes/admin.routes');
 
-app.get('/', loginController.getLoginPage);
-app.post('/login', loginController.postLogin);
-app.post('/signup', loginController.postSignup);
 
-// app.use('/admin');
+app.get('/', getLoginPage);
+
+app.use('/access', accessRoutes);
+
+app.use('/admin', adminRoutes);
 
 let port = process.env.PORT;
 if (port == null || port == "") {

@@ -1,0 +1,19 @@
+html,
+body {
+    height: 100%;
+}
+
+.full-page {
+    height: 100%;
+    background-color: #08AEEA;
+    background-image: linear-gradient(0deg, #08AEEA 0%, #2AF598 100%);
+}
+
+.card {
+    position: relative;
+    width: 50%;
+    margin: auto;
+    top: 20%;
+    border-radius: 16px;
+    opacity: 0.9;
+}
