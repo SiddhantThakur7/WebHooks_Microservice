@@ -1,7 +1,9 @@
 const User = require('../Models/users.models');
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const saltRounds = parseInt(process.env.SALT, 10);
 const pass_text = process.env.PASS;
+
+
 
 exports.getLoginPage = (req, res, next) => {
     res.render('access');
@@ -47,6 +49,8 @@ exports.postSignup = (req, res, next) => {
         });
         return new_user.save()
     })
-    .then(() => res.send('Signed Up!'))
+    .then(() => {
+        res.send('Signed Up!')
+    })
     .catch((err) => console.log(err));
 };
