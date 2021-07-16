@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const accessRoutes = require('./routes/access.routes');
 const getLoginPage = require('./controllers/access.controllers').getLoginPage;
 const adminRoutes = require('./routes/admin.routes');
+const triggerRoutes = require('./routes/ip.routes')
 
 
 app.get('/', getLoginPage);
@@ -21,6 +22,8 @@ app.get('/', getLoginPage);
 app.use('/access', accessRoutes);
 
 app.use('/admin', adminRoutes);
+
+app.use('/ip', triggerRoutes);
 
 let port = process.env.PORT;
 if (port == null || port == "") {

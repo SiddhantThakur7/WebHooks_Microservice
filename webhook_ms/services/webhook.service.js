@@ -61,7 +61,8 @@ module.exports = {
 				uri: "string"
 			},
 			async handler(ctx) {
-				return this.updateWebHook(ctx.params.id, ctx.params.uri.toString())
+				console.log(ctx.params);
+				return this.updateWebHook(ctx.params.id, ctx.params.uri)
 					.then((result) => result)
 					.catch((error) => error);
 			}
