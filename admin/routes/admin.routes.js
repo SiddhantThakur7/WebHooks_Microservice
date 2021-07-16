@@ -12,7 +12,7 @@ router.get('/register', adminController.getRegisterWebHooks);
 
 router.get('/update/:hid', adminController.getUpdateHook);
 
-// router.post('/update', loginController.postSignup);
+router.post('/update', adminController.updateWebHooks);
 
 // router.post('/delete', loginController.postSignup);
 

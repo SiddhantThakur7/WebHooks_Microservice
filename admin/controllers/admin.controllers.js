@@ -28,7 +28,20 @@ exports.getUpdateHook = (req, res, next) => {
 };
 
 exports.updateWebHooks = (req, res, next) => {
-
+    console.log('>>>>>>>>>>>>>>>>>>>', req.body);
+    axios({
+        method: 'PUT',
+        url: 'http://localhost:8080/webhook/update',
+        data: {
+            uri: req.body.target_url.toString(),
+            id: req.body.hook_id.toString()
+          }
+      })
+        .then(function (response) {
+            console.log(response.data);
+            res.redirect('/admin');
+        })
+        .catch(err => console.log(err));
 };
 
 exports.deleteWebHooks = (req, res, next) => {

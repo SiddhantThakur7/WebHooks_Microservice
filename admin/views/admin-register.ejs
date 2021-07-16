@@ -39,6 +39,7 @@
                                 <% if(hook_id){ %>
                                     <td class="pt-3-half" contenteditable="true"><%= hook_id %></td>
                                     <form action="/admin/update" method="post">
+                                        <input type="hidden" name='hid' value=<%= hook_id %>>
                                         <td class="pt-3-half" contenteditable="true"> <input class="url-input" type="text" name="target_url" value="<%= hook_url %>"> </td>
                                         <td class="btn-d">
                                             <span class="table-remove">
