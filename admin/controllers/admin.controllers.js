@@ -56,5 +56,16 @@ exports.updateWebHooks = (req, res, next) => {
 };
 
 exports.deleteWebHooks = (req, res, next) => {
-
+    axios({
+        method: 'DELETE',
+        url: 'http://localhost:8080/webhook/delete',
+        data: {
+            id: req.body.hook_id.toString()
+          }
+      })
+        .then(function (response) {
+            console.log(response.data);
+            res.redirect('/admin');
+        })
+        .catch(err => console.log(err));
 };

@@ -14,7 +14,7 @@ router.get('/update/:hid', adminController.getUpdateHook);
 
 router.post('/update', adminController.updateWebHooks);
 
-// router.post('/delete', loginController.postSignup);
+router.post('/delete', adminController.deleteWebHooks);
 
 
 module.exports = router;
