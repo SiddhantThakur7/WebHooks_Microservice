@@ -18,7 +18,19 @@ exports.getRegisterWebHooks = (req, res, next) => {
 };
 
 exports.postRegisterWebHooks = (req, res, next) => {
-
+    axios({
+        method: 'POST',
+        url: 'http://localhost:8080/webhook/register',
+        data: {
+            // user:{some logic for user}
+            uri: req.body.target_url.toString(),
+          }
+      })
+        .then(function (response) {
+            console.log(response.data);
+            res.redirect('/admin');
+        })
+        .catch(err => console.log(err));
 };
 
 exports.getUpdateHook = (req, res, next) => {
@@ -28,7 +40,6 @@ exports.getUpdateHook = (req, res, next) => {
 };
 
 exports.updateWebHooks = (req, res, next) => {
-    console.log('>>>>>>>>>>>>>>>>>>>', req.body);
     axios({
         method: 'PUT',
         url: 'http://localhost:8080/webhook/update',
