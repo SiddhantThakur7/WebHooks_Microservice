@@ -17,3 +17,13 @@ body {
     border-radius: 16px;
     opacity: 0.9;
 }
+
+.url-input{
+    width: 70%;
+    padding: 1.2%;
+    border-radius: 8px;
+}
+
+button:hover{
+    cursor: pointer;
+}

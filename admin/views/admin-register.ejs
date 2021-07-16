@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Registry Home</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/admin.styles.css">
+</head>
+
+<body>
+    <div class='full-page'>
+        <div class="card">
+            
+            <div class="card-body">
+                <div id="table" class="table-editable">
+
+                    <!-- <span class="table-add float-right mb-3 mr-2">
+                        <form action="/admin/register" method="get">
+                            <button class="btn btn-info">Add</button>
+                        </form>
+                    </span> -->
+                    <table class="table table-bordered table-responsive-md table-striped text-center">
+                        <thead>
+                            <tr>
+                                <% if(hook_id){ %>
+                                    <th class="text-center">Webhook #id</th>
+                                <% } %> 
+                                <th class="text-center">Target URL</th>
+                                <th class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <% if(hook_id){ %>
+                                    <td class="pt-3-half" contenteditable="true"><%= hook_id %></td>
+                                    <form action="/admin/update" method="post">
+                                        <td class="pt-3-half" contenteditable="true"> <input class="url-input" type="text" name="target_url" value="<%= hook_url %>"> </td>
+                                        <td class="btn-d">
+                                            <span class="table-remove">
+                                                <input type="hidden" name="hook_id" value="<%= hook_id %>">
+                                                    <button type="submit" class="btn btn-success btn-rounded btn-sm my-0">
+                                                        <%= bname %>
+                                                    </button>
+                                                </span>
+                                            </td>
+                                        </form>
+        
+                                <% } else { %>
+                                <form action="/admin/register" method="post">
+                                <td class="pt-3-half" contenteditable="true"> <input class="url-input" type="text" name="target_url" value="<%= hook_url %>"> </td>
+                                <td class="btn-d">
+                                    <span class="table-remove">
+                                            <button type="submit" class="btn btn-success btn-rounded btn-sm my-0">
+                                                <%= bname %>
+                                            </button>
+                                        </span>
+                                    </td>
+                                </form>
+                                <% } %> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <i class="fas fa-plus-square"></i>
+</body>
+
+</html>

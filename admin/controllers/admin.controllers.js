@@ -14,11 +14,17 @@ exports.getWebHooks = (req, res, next) => {
 };
 
 exports.getRegisterWebHooks = (req, res, next) => {
-
+    res.render('admin-register', {bname: 'Register', hook_url: "", hook_id: ""});
 };
 
 exports.postRegisterWebHooks = (req, res, next) => {
 
+};
+
+exports.getUpdateHook = (req, res, next) => {
+    console.log(req.params);
+    console.log(req.query);
+    res.render('admin-register', {bname: 'Update', hook_url: req.query.hook_url, hook_id: req.query.hook_id});
 };
 
 exports.updateWebHooks = (req, res, next) => {

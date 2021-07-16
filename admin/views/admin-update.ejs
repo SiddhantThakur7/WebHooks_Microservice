@@ -15,9 +15,7 @@
 <body>
     <div class='full-page'>
         <div class="card">
-            <h3 class="card-header text-center font-weight-bold text-uppercase py-4">
-                Editable table
-            </h3>
+            
             <div class="card-body">
                 <div id="table" class="table-editable">
 
@@ -29,42 +27,23 @@
                     <table class="table table-bordered table-responsive-md table-striped text-center">
                         <thead>
                             <tr>
-                                <th class="text-center">Webhook #id</th>
                                 <th class="text-center">Target URL</th>
-                                <th class="text-center">Update</th>
-                                <th class="text-center">Delete</th>
+                                <th class="text-center"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% webhooks.forEach(hook => { %>
                             <tr>
-                                <td class="pt-3-half" contenteditable="true"><%= hook._id %></td>
-                                <td class="pt-3-half" contenteditable="true"><%= hook.target_url %></td>
-                                </td>
-                                <td>
+                                <form action="/admin/register" method="post">
+                                <td class="pt-3-half" contenteditable="true"> <input class="url-input" type="text" name="target_url" value="hook.target_url"> </td>
+                                <td class="btn-d">
                                     <span class="table-remove">
-                                        <form action="/admin/delete" method="post">
-                                            <input type="hidden" name="hook_id" value="<%= hook._id %>">
                                             <button type="submit" class="btn btn-danger btn-rounded btn-sm my-0">
-                                                Remove
+                                                Register
                                             </button>
-                                        </form>
                                         </span>
                                     </td>
-                                    <td>
-                                        <span class="table-remove">
-                                            <form action="/admin/update/:<%= hook._id.toString() %>?b=<%= hook.target_url.toString() %>" method="get">                                                
-                                                <input type="hidden" name="hook_url" value="<%= hook.target_url %>">
-                                                <input type="hidden" name="hook_id" value="<%= hook._id %>">
-                                                <button type="submit" class="btn btn-success btn-rounded btn-sm my-0">
-                                                    Update
-                                                </button>
-                                            </form>
-                                            </span>
-                                        </td>
+                                </form>
                             </tr>
-                            <% }) %>
-
                         </tbody>
                     </table>
                 </div>

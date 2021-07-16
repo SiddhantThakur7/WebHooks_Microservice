@@ -6,9 +6,11 @@ const adminController = require('../controllers/admin.controllers');
 
 router.get('/', adminController.getWebHooks);
 
-// router.get('/register', loginController.postSignup);
+router.get('/register', adminController.getRegisterWebHooks);
 
 // router.post('/register', loginController.postSignup);
+
+router.get('/update/:hid', adminController.getUpdateHook);
 
 // router.post('/update', loginController.postSignup);
 
