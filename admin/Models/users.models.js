@@ -1,5 +1,6 @@
 const mongoose= require("mongoose");
 
+//The file contains the schema that the user data documents will follow
 
 const Schema = mongoose.Schema;
 
@@ -14,6 +15,6 @@ const userSchema = new Schema({
     }
 });
 
-
+//A collection named "users" will be formed in the user database.
 const User = mongoose.model('user', userSchema);
 module.exports = User;

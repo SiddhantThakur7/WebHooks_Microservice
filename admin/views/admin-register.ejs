@@ -38,6 +38,7 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <!-- if hook._id is present then the function is to get the admin-update page -->
                                 <% if(hook_id){ %>
                                     <td class="pt-3-half" contenteditable="true"><%= hook_id %></td>
                                     <form action="/admin/update" method="post">
@@ -52,7 +53,8 @@
                                                 </span>
                                             </td>
                                         </form>
-        
+                                        
+                                <!-- if hook._id is not present then the function is to get the admin-register page -->
                                 <% } else { %>
                                 <form action="/admin/register" method="post">
                                 <td class="pt-3-half" contenteditable="true"> <input class="url-input" type="text" name="target_url" value="<%= hook_url %>"> </td>

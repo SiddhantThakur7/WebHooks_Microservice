@@ -39,6 +39,8 @@
                             </tr>
                         </thead>
                         <tbody>
+
+                            <!-- Dynamically form the tables rows depending on the number of webhooks present -->
                             <% webhooks.forEach(hook => { %>
                             <tr>
                                 <td class="pt-3-half" contenteditable="true"><%= hook._id %></td>

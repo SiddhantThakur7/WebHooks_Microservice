@@ -1,13 +1,7 @@
 "use strict";
-
 /**
  * @typedef {import('moleculer').Context} Context Moleculer's Context
  */
-
-//  const hookList = [
-//     {id: 1, uri: 'Sharknado'},
-//     {id: 2, uri: 'Roma'},
-// ];
 
 const mongoose = require('mongoose');
 const PromisePool = require('@supercharge/promise-pool')
@@ -18,28 +12,15 @@ const Webhook = require('../Models/webhook.models');
 
 module.exports = {
 	name: "webhook",
-
-	/**
-	 * Settings
-	 */
-	settings: {
-
-	},
-
-	/**
-	 * Dependencies
-	 */
-	dependencies: [],
-
 	/**
 	 * Actions
 	 */
 	actions: {
 
 		/**
-		 * Say a 'Hello' action.
-		 *
-		 * @returns
+		 * Saves a new webhook with its taget url and user_id in the database.
+		 * @params -> targetUrl(uri) {String}, user_id {String}
+		 * @returns -> Unique id which is saved with the targetUrl {String}
 		 */
 		register: {
 			rest: {
@@ -57,6 +38,12 @@ module.exports = {
 					.catch(err => err);
 			}
 		},
+
+		/**
+		 * Updates a webhook's taget url already saved in the database given the unique id of the webhook.
+		 * @params -> id {String}, newTargetUrl(uri) {String}
+		 * @returns -> Unique id of the updated webhook if an update was made else null.
+		 */
 		update: {
 			rest: {
 				method: "PUT",
@@ -74,6 +61,11 @@ module.exports = {
 			}
 		},
 
+		/**
+		 * Deletes a webhook along with its taget url that is saved in the database given the unique id of the webhook.
+		 * @params -> id {String}
+		 * @returns -> null
+		 */
 		delete: {
 			rest: {
 				method: "DELETE",
@@ -89,6 +81,11 @@ module.exports = {
 			}
 		},
 
+		/**
+		 * Extracts all the webhooks of a user from the database.
+		 * @params -> user_id {String}
+		 * @returns -> [{Object}]
+		 */
 		list: {
 			rest: {
 				method: "GET",
@@ -103,6 +100,12 @@ module.exports = {
 					.catch(error => error);
 			}
 		},
+
+		/**
+		 * Extracts all the webhooks of a user. Use the list to make POST requests to the targetUrl(s).
+		 * @params -> user_id {String}, Ip address of the user(ip) {String}
+		 * @returns -> [{Object}]
+		 */
 		trigger: {
 			rest: {
 				method: "POST",
@@ -134,6 +137,7 @@ module.exports = {
 	 * Methods
 	 */
 	methods: {
+		// returns a promise that resolves when the webhook is registered successfully.
 		saveWebHook(url, uid) {
 			const hook = new Webhook({
 				target_url: url,
@@ -148,6 +152,7 @@ module.exports = {
 			})
 		},
 
+		// returns a promise that resolves when webhook is updated successfully.
 		updateWebHook(h_id, url) {
 			return new Promise((resolve, reject) => {
 				Webhook.findOneAndUpdate({
@@ -175,6 +180,7 @@ module.exports = {
 			})
 		},
 
+		// returns a promise that resolves when all the webhooks pertaining to a user have been extracted.
 		listWebHook(uid) {
 			return new Promise((resolve, reject) => {
 				Webhook.find({'user_id': uid})
@@ -183,6 +189,7 @@ module.exports = {
 			})
 		},
 
+		// returns a promise that resolves when the webhook is successfully deleted.
 		deleteWebHook(h_id) {
 			return new Promise((resolve, reject) => {
 				Webhook.findOneAndRemove({
@@ -205,9 +212,11 @@ module.exports = {
 			});
 		},
 		
+		// returns a promise that resolves when all the webhooks pertaining to a user have been extracted and trigerred. 
+		// Also makes sure that the failed requests are retried upto 5 times while maintaining the batch execution flow.
 		triggerWebHookAction(ip, uid) {
 			return new Promise((resolve, reject) => {
-				Webhook.find({'user_id': uid})
+				this.listWebHook(uid)
 				.then((webhooks) => {
 					if (!webhooks) {
 						reject({
@@ -217,6 +226,9 @@ module.exports = {
 					return webhooks;
 				})
 				.then(async (hooks) => {
+					/** 
+					 * The Promise pool considers upto 20 requests to paralellize at any given time.
+					 * */ 
 					const {
 						results,
 						errors
@@ -254,6 +266,8 @@ module.exports = {
 
 	/**
 	 * Service created lifecycle event handler
+	 * The interceptor is instantiated as soon as the service is created.
+	 * Retries every request with statusCode != 200 about 5 times while maintaining the batch execution flow.
 	 */
 	created() {
 		axiosRetry(axios, {
@@ -267,19 +281,5 @@ module.exports = {
 			  return error.response.status != 200;
 			},
 		  });
-	},
-
-	/**
-	 * Service started lifecycle event handler
-	 */
-	async started() {
-
-	},
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
-	async stopped() {
-
 	}
 }

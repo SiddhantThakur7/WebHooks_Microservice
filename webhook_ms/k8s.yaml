@@ -83,7 +83,7 @@ spec:
 
 ---
 #########################################################
-# Greeter service
+# Webhook service
 #########################################################
 apiVersion: apps/v1
 kind: Deployment
@@ -108,34 +108,6 @@ spec:
         env:
           - name: SERVICES
             value: webhook
-
----
-#########################################################
-# Products service
-#########################################################
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: products
-spec:
-  selector:
-    matchLabels:
-      app: products
-  replicas: 2
-  template:
-    metadata:
-      labels:
-        app: products
-    spec:
-      containers:
-      - name: products
-        image: webhook_ms
-        envFrom:
-        - configMapRef:
-            name: common-env
-        env:
-          - name: SERVICES
-            value: products
 
 ---
 #########################################################

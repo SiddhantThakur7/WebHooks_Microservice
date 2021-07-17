@@ -1,9 +1,10 @@
 const User = require('../Models/users.models');
 const bcrypt = require('bcrypt');
 
-
+//Extracting the saltrounds value which is used for hashing from the environment variables (.env file)
 const saltRounds = parseInt(process.env.SALT, 10);
 
+// ********** GET http://localhost:3000/
 exports.getLoginPage = (req, res, next) => {
     if(req.session.user){
         res.redirect('/admin');
@@ -11,6 +12,9 @@ exports.getLoginPage = (req, res, next) => {
     res.render('access');
 };
 
+// ********** POST http://localhost:3000/access/login
+// Extracts the user input for the username and password. The user document with the username is queried and passwords are compared.
+// If the passwords match, a new session document is saved with session.user = user, session.isLoggedIn = True.
 exports.postLogin = (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -19,7 +23,6 @@ exports.postLogin = (req, res, next) => {
         })
         .then((user) => {
             if (!user) {
-                req.flash("error", "Invalid email or password.");
                 return res.redirect("/");
             }
             bcrypt
@@ -35,7 +38,6 @@ exports.postLogin = (req, res, next) => {
                             res.redirect("/admin");
                         });
                     }
-                    req.flash("error", "Invalid email or password.");
                     res.redirect("/");
                 })
                 .catch((err) => {
@@ -46,6 +48,10 @@ exports.postLogin = (req, res, next) => {
         .catch((err) => console.log(err));
 };
 
+
+// ********** POST http://localhost:3000/access/signup
+// Extracts the user input for the username and password. The user document with the username is queried to check if the user already exists.
+// The password is encrypted before storage, a new session document is saved and the user is granted access to the admin route.
 exports.postSignup = (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -87,6 +93,8 @@ exports.postSignup = (req, res, next) => {
         });
 }
 
+// ********** POST http://localhost:3000/logout
+// The session object is destroyed and the '/' route is re-rendered.  
 exports.postLogout = (req, res, next) => {
     req.session.destroy((err) => {
         console.log(err);

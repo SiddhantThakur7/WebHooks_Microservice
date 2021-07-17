@@ -16,10 +16,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const MongoDBStore = require('connect-mongodb-session')(session);
 const User = require('./Models/users.models');
 
+
+//Creating a store for the ongoing sessions
 const store = new MongoDBStore({
   uri: process.env.MONGODB_URI,
   collection: 'sessions'
 });
+//Intializing a session
 app.use(session({
   secret: process.env.PASS,
   resave: false,
@@ -27,6 +30,7 @@ app.use(session({
   store: store
 }));
 
+//Checking whether a session exists and populating req.user if it true
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -39,24 +43,27 @@ app.use((req, res, next) => {
     })
     .catch((err) => console.log(err));
 });
-app.use(flash());
 
-
+//Importing Routes and Controllers
 const accessRoutes = require('./routes/access.routes');
 const getLoginPage = require('./controllers/access.controllers').getLoginPage;
 const postLogout = require('./controllers/access.controllers').postLogout;
 const adminRoutes = require('./routes/admin.routes');
 const triggerRoutes = require('./routes/ip.routes');
 
-
+// ********** GET http://localhost:3000/
 app.get('/', getLoginPage);
 
+// ********** POST http://localhost:3000/logout 
 app.post('/logout', postLogout);
 
+// ********** http://localhost:3000/access 
 app.use('/access', accessRoutes);
 
+// ********** http://localhost:3000/admin 
 app.use('/admin', adminRoutes);
 
+// ********** POST http://localhost:3000/ip 
 app.use('/ip', triggerRoutes);
 
 let port = process.env.PORT;
@@ -64,6 +71,7 @@ if (port == null || port == "") {
   port = 3000;
 }
 
+//listen on port 3000 when no production port environment variable exisits.
 app.listen(port, (error) => {
     if (error) {
         console.log(error);

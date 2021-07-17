@@ -16,11 +16,11 @@ module.exports = {
 	name: "api",
 	mixins: [ApiGateway],
 
-	// More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html
 	settings: {
-		// Exposed port
+		// PORT OF OPERATION
 		port: process.env.PORT || 8080,
 
+		// Granting cross origin requests
 		cors: {
 			methods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"],
 			origin: "*",
@@ -28,11 +28,10 @@ module.exports = {
 
 		routes: [{
 			path: "",
-
-			// Enable/disable parameter merging method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Disable-merging
+			// Enable/disable parameter merging method
 			mergeParams: true,
 
-
+			// Copnfiguring body parsers to parse request data
 			bodyParsers: {
 				json: {
 					strict: false,
@@ -45,45 +44,22 @@ module.exports = {
 			},
 
 			// Enable/disable logging
-			logging: true
+			logging: false
 		}],
-		// // Do not log client side errors (does not log an error response when the error.code is 400<=X<500)
-		// log4XXResponses: false,
-		// // Logging the request parameters. Set to any log level to enable it. E.g. "info"
-		// logRequestParams: null,
-		// // Logging the response data. Set to any log level to enable it. E.g. "info"
-		// logResponseData: null,
-
-
-		// Serve assets from "public" folder. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Serve-static-files
-		assets: {
-			folder: "public",
-
-			// Options to `server-static` module
-			options: {}
-		}
 	},
 	
 	events:{
+		// Log when data base connection is established.
 		"db.connected"(){
 			this.logger.info('Database connection established.');
 		}
 	},
-	
-	methods: {
-		// initRoutes(app) {
-		// 	// app.get('/webhook', this.registerUrl);
-		// 	// app.post("/webhook", this.registerUrl);
-		// 	// app.put("/webhook", this.updateUrl);
-		// 	// app.post("/trigger", this.triggerRequests);
-		// 	// app.get('/webhook', this.getList);
-	},
 
-
+	/**
+	 * Service created lifecycle event handler
+	 * Databse connection should be stablished as soon as the API gateway service is created.
+	 */
 	created() {
-		const app = express();
-		app.use(bodyParser());
-		this.app = app;
 		const DB_URI = process.env.MONGODB_URI;
 		mongoose.connect(DB_URI)
 			.then(result => this.broker.emit("db.connected"))
