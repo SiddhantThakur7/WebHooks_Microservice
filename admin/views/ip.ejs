@@ -15,7 +15,9 @@
 <body>
     <div class='full-page'>
         <div class="card">
-            
+            <h3 class="card-header text-center font-weight-bold text-uppercase py-4">
+                Webhook Failures
+            </h3>
             <div class="card-body">
                 <div id="table" class="table-editable">
 
@@ -27,30 +29,25 @@
                     <table class="table table-bordered table-responsive-md table-striped text-center">
                         <thead>
                             <tr>
+                                <th class="text-center">Webhook #id</th>
                                 <th class="text-center">Target URL</th>
-                                <th class="text-center"></th>
+                                <th class="text-center">Code</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <form action="/admin/register" method="post">
-                                <td class="pt-3-half" contenteditable="true"> <input class="url-input" type="text" name="target_url" value="hook.target_url"> </td>
-                                <td class="btn-d">
-                                    <span class="table-remove">
-                                            <button type="submit" class="btn btn-danger btn-rounded btn-sm my-0">
-                                                Register
-                                            </button>
-                                        </span>
-                                    </td>
-                                </form>
-                            </tr>
+                            <% for(i=0; i < codes.length; i++){ %>
+                                <tr>
+                                    <td class="pt-3-half" contenteditable="true"><%= hooks[i]._id %></td>
+                                    <td class="pt-3-half" contenteditable="true"><%= hooks[i].target_url %></td>
+                                    <td class="pt-3-half code" contenteditable="true"><%= codes[i] %></td>
+                                </tr>
+                            <% } %>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <i class="fas fa-plus-square"></i>
 </body>
 
 </html>

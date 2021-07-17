@@ -8,7 +8,7 @@ exports.getWebHooks = (req, res, next) => {
       })
         .then(function (response) {
             console.log(response.data);
-            res.render('admin', {webhooks: response.data});
+            res.render('admin', {webhooks: response.data, result: []});
         })
         .catch(err => console.log(err));
 };
