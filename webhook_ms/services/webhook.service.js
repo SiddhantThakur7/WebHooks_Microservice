@@ -10,6 +10,10 @@
 // ];
 
 const mongoose = require('mongoose');
+const PromisePool = require('@supercharge/promise-pool')
+const axios = require('axios');
+const axiosRetry = require('axios-retry');
+
 const Webhook = require('../Models/webhook.models');
 
 module.exports = {
@@ -99,8 +103,13 @@ module.exports = {
 				method: "POST",
 				path: "/trigger"
 			},
+			params: {
+				// ip: "string"
+			},
 			async handler(ctx) {
-				return hookList;
+				return this.triggerWebHookAction(1)
+					.then(result => result)
+					.catch(error => error);
 			}
 		}
 	},
@@ -109,7 +118,10 @@ module.exports = {
 	 * Events
 	 */
 	events: {
-
+		"webhook.trigger"(payload){
+			this.broker.call("webhook.trigger", payload)
+    			.then(res => console.log("Outcome: ", res));
+		}
 	},
 
 	/**
@@ -166,23 +178,89 @@ module.exports = {
 
 		deleteWebHook(h_id) {
 			return new Promise((resolve, reject) => {
-				Webhook.findOneAndRemove({'_id': h_id})
-				.then((doc) => {
-					if(!doc){
-						reject({message: "The web hook does not exist."});
+				Webhook.findOneAndRemove({
+						'_id': h_id
+					})
+					.then((doc) => {
+						if (!doc) {
+							reject({
+								message: "The web hook does not exist."
+							});
+						}
+						resolve({
+							message: "The webhook is deleted successfully."
+						})
+					})
+					.catch((err) => reject({
+						message: "The web hook could not be deleted",
+						error: err
+					}));
+			});
+		},
+		
+		triggerWebHookAction(ip) {
+			return new Promise((resolve, reject) => {
+				Webhook.find()
+				.then((webhooks) => {
+					if (!webhooks) {
+						reject({
+							message: "No webhooks to be triggerred"
+						})
 					}
-					resolve({message: "The webhook is deleted successfully."})
+					return webhooks;
 				})
-				.catch((err) => reject({message: "The web hook could not be deleted", error: err}));
+				.then(async (hooks) => {
+					const {
+						results,
+						errors
+					} = await PromisePool
+					.withConcurrency(20)
+					.for(hooks)
+					.process(async data => {
+						const calls = await axios({
+							method: 'POST',
+							url: data.target_url,
+							data: {
+								ip: ip,
+								timestamp: data.createdAt.toString(),
+							}
+						})
+						.then((response) => {
+							console.log(response.data);
+							return response.data;
+						})
+						return calls;
+					})
+					return {res:results, errs: errors}
+				})
+				.then((outcome) => {
+					console.log('outcome =====', outcome);
+					resolve(outcome);
+				})
+				.catch((err) => reject({
+					message: "The web hooks could not be triggerred.",
+					error: err
+				}))
 			});
 		}
 	},
 
-
 	/**
 	 * Service created lifecycle event handler
 	 */
-	created() {},
+	created() {
+		axiosRetry(axios, {
+			retries: 5, // number of retries
+			retryDelay: (retryCount) => {
+			  console.log(`retry attempt: ${retryCount}`);
+			  return retryCount * 200; // time interval between retries
+			},
+			retryCondition: (error) => {
+			  // if retry condition is not specified, by default idempotent requests are retried
+			  return error.response.status != 200;
+			},
+		  });
+	},
 
 	/**
 	 * Service started lifecycle event handler
