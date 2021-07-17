@@ -1,7 +1,5 @@
 FROM node:current-alpine
 
-ENV NODE_ENV=production
-
 RUN mkdir /app
 WORKDIR /app
 
@@ -11,4 +9,6 @@ RUN npm install --production
 
 COPY . .
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
+
+EXPOSE 8080
