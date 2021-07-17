@@ -7,7 +7,8 @@ exports.triggerWebHooks = (req, res, next) => {
         method: 'POST',
         url: 'http://localhost:8080/webhook/trigger',
         data: {
-            ip: ip
+            ip: ip,
+            user_id: req.session.user._id.toString()
           },
         timeout: 0
       })

@@ -47,10 +47,12 @@ module.exports = {
 				path: "/register"
 			},
 			params: {
-				uri: "string"
+				uri: "string",
+				user_id: "string"
 			},
 			async handler(ctx) {
-				return this.saveWebHook(ctx.params.uri)
+				console.log(ctx.params.user_id);
+				return this.saveWebHook(ctx.params.uri, ctx.params.user_id)
 					.then((hook_id) => hook_id)
 					.catch(err => err);
 			}
@@ -92,8 +94,11 @@ module.exports = {
 				method: "GET",
 				path: "/list"
 			},
-			async handler() {
-				return this.listWebHook()
+			params: {
+				user_id: "string"
+			},
+			async handler(ctx) {
+				return this.listWebHook(ctx.params.user_id)
 					.then(result => result)
 					.catch(error => error);
 			}
@@ -104,10 +109,11 @@ module.exports = {
 				path: "/trigger"
 			},
 			params: {
-				// ip: "string"
+				ip: "string",
+				user_id: "string"
 			},
 			async handler(ctx) {
-				return this.triggerWebHookAction(1)
+				return this.triggerWebHookAction(ctx.params.ip, ctx.params.user_id)
 					.then(result => result)
 					.catch(error => error);
 			}
@@ -128,9 +134,10 @@ module.exports = {
 	 * Methods
 	 */
 	methods: {
-		saveWebHook(url) {
+		saveWebHook(url, uid) {
 			const hook = new Webhook({
-				target_url: url
+				target_url: url,
+				user_id: mongoose.Types.ObjectId(uid)
 			});
 			return new Promise((resolve, reject) => {
 				hook.save()
@@ -168,9 +175,9 @@ module.exports = {
 			})
 		},
 
-		listWebHook() {
+		listWebHook(uid) {
 			return new Promise((resolve, reject) => {
-				Webhook.find()
+				Webhook.find({'user_id': uid})
 					.then((docs) => resolve(docs))
 					.catch((err) => reject(err));
 			})
@@ -198,9 +205,9 @@ module.exports = {
 			});
 		},
 		
-		triggerWebHookAction(ip) {
+		triggerWebHookAction(ip, uid) {
 			return new Promise((resolve, reject) => {
-				Webhook.find()
+				Webhook.find({'user_id': uid})
 				.then((webhooks) => {
 					if (!webhooks) {
 						reject({

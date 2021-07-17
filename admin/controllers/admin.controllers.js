@@ -4,7 +4,9 @@ exports.getWebHooks = (req, res, next) => {
     return axios({
         method: 'GET',
         url: 'http://localhost:8080/webhook/list',
-        // responseType: 'text'
+        data: {
+            user_id: req.session.user._id.toString(),
+        }
       })
         .then(function (response) {
             console.log(response.data);
@@ -18,11 +20,12 @@ exports.getRegisterWebHooks = (req, res, next) => {
 };
 
 exports.postRegisterWebHooks = (req, res, next) => {
+    console.log('HERERERERERERERE----------------->', req.session.user);
     axios({
         method: 'POST',
         url: 'http://localhost:8080/webhook/register',
         data: {
-            // user:{some logic for user}
+            user_id: req.session.user._id.toString(),
             uri: req.body.target_url.toString(),
           }
       })
