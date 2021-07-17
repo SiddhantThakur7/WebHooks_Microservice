@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 exports.getWebHooks = (req, res, next) => {
-    axios({
+    return axios({
         method: 'GET',
         url: 'http://localhost:8080/webhook/list',
         // responseType: 'text'

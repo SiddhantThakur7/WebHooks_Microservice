@@ -10,6 +10,17 @@ body {
     padding: 10% 0;
 }
 
+.logout-form{
+    text-align: right;
+}
+
+.btn-outline-danger{
+    position: absolute;
+    display: inline-block;
+    top: 3%;
+    right: 3%;
+}
+
 .card {
     position: relative;
     width: 50%;
@@ -36,7 +47,7 @@ button:hover{
 
 #trigger-btn{
     display: inline-block;
-    padding: 1%;
+    padding: 0.5% 0.8%;
     border-radius: 10px;
     font-size: 1.5rem;
     font-weight:800;
@@ -48,3 +59,4 @@ button:hover{
     font-size: 1rem;
     font-weight: 600;
 }
+

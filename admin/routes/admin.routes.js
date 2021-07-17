@@ -4,17 +4,19 @@ const router = express.Router();
 
 const adminController = require('../controllers/admin.controllers');
 
-router.get('/', adminController.getWebHooks);
+const isAuth = require('../isAuth.util');
 
-router.get('/register', adminController.getRegisterWebHooks);
+router.get('/', isAuth, adminController.getWebHooks);
 
-router.post('/register', adminController.postRegisterWebHooks);
+router.get('/register', isAuth, adminController.getRegisterWebHooks);
 
-router.get('/update/:hid', adminController.getUpdateHook);
+router.post('/register', isAuth, isAuth, adminController.postRegisterWebHooks);
 
-router.post('/update', adminController.updateWebHooks);
+router.get('/update/:hid', isAuth, adminController.getUpdateHook);
 
-router.post('/delete', adminController.deleteWebHooks);
+router.post('/update', isAuth, adminController.updateWebHooks);
+
+router.post('/delete', isAuth, adminController.deleteWebHooks);
 
 
 module.exports = router;
